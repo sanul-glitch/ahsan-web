@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+
+<html lang="id">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <link rel="stylesheet" href="style.css">
+        <title>Sanul's Web</title>
+    </head>
+    <body>
+        <nav class="navbar">
+        <div class="logo">
+            <a href="index.html"><img src="kicau-maniaa.gif" title="homeicon" width="50px" height="50px"></a>
+        </div> 
+            <ul class="nav-links">
+                <li><a href="aboutme.html">About me</a></li>
+                <li><a href="content.html">Content</a></li>
+            </ul>
+            <div class="menu-toggle" id="mobile-menu">
+                <span class="bar"></span>
+                <span class="bar"></span>
+                <span class="bar"></span>
+            </div>
+        </nav>
+        <div style="padding: 100px 20px; text-align: center;">
+            <h1>Documentation</h1>
+        </div>
+
+        <script>
+    const menu = document.querySelector('#mobile-menu');
+    const menuLinks = document.querySelector('.nav-links');
+
+    menu.addEventListener('click', function() {
+        // Menambah atau menghapus class 'active' saat diklik
+        menuLinks.classList.toggle('active');
+        
+        // Opsional: Animasi burger jadi silang (X)
+        menu.classList.toggle('is-active');
+    });
+</script>
+<canvas id="canvas"></canvas>
+<script src="cursor.js"></script>
+    </body>
+</html>

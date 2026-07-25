@@ -1,0 +1,409 @@
+/* --- bar 
+body {
+    background-color: #222831 ; /* Dark Blue 
+    color: #393E46;
+    line-height: 1.6;
+}*/
+
+* {
+  box-sizing: border-box;
+}
+
+
+section {
+  display: grid;
+  gap: 4rem;
+  align-items: center;
+  justify-content: center;
+}
+
+
+.code {
+  font-size: 3rem;
+  display: flex;
+  flex-wrap: nowrap;
+  color: hsl(0 0% 100%);
+  border-radius: 1rem;
+  background: hsl(0 0% 6%);
+  justify-content: center;
+  box-shadow: 0 1px hsl(0 0% 100% / 0.25) inset;
+}
+
+.code:hover {
+  cursor: grab;
+}
+
+.digit {
+  display: flex;
+  height: 100%;
+  padding: 5.5rem 1rem;
+}
+
+.digit:focus-visible {
+  outline-color: hsl(0 0% 50% / 0.25);
+  outline-offset: 1rem;
+}
+
+.digit span {
+  scale: calc(var(--active, 0) + 0.5);
+  filter: blur(calc((1 - var(--active, 0)) * 1rem));
+  transition: scale calc(((1 - var(--active, 0)) + 0.2) * 1s), filter calc(((1 - var(--active, 0)) + 0.2) * 1s);
+}
+
+ul {
+  padding: 0;
+  margin: 0;
+}
+
+.digit:first-of-type {
+  padding-left: 5rem;
+}
+.digit:last-of-type {
+  padding-right: 5rem;
+}
+
+:root {
+  --lerp-0: 1; /* === sin(90deg) */
+  --lerp-1: calc(sin(50deg));
+  --lerp-2: calc(sin(45deg));
+  --lerp-3: calc(sin(35deg));
+  --lerp-4: calc(sin(25deg));
+  --lerp-5: calc(sin(15deg));
+}
+
+.digit:is(:hover, :focus-visible) {
+  --active: var(--lerp-0);
+}
+.digit:is(:hover, :focus-visible) + .digit,
+.digit:has(+ .digit:is(:hover, :focus-visible)) {
+  --active: var(--lerp-1);
+}
+.digit:is(:hover, :focus-visible) + .digit + .digit,
+.digit:has(+ .digit + .digit:is(:hover, :focus-visible)) {
+  --active: var(--lerp-2);
+}
+.digit:is(:hover, :focus-visible) + .digit + .digit + .digit,
+.digit:has(+ .digit + .digit + .digit:is(:hover, :focus-visible)) {
+  --active: var(--lerp-3);
+}
+.digit:is(:hover, :focus-visible) + .digit + .digit + .digit + .digit,
+.digit:has(+ .digit + .digit + .digit + .digit:is(:hover, :focus-visible)) {
+  --active: var(--lerp-4);
+}
+.digit:is(:hover, :focus-visible) + .digit + .digit + .digit + .digit + .digit,
+.digit:has(+ .digit + .digit + .digit + .digit + .digit:is(:hover, :focus-visible)) {
+  --active: var(--lerp-5);
+}
+
+h1 {
+    color: #948979;
+}
+
+h5  {
+    color: #948979;
+}
+
+h2 {
+    color: #948979;
+}
+
+p {
+    color: #4B4038;
+}
+
+.card:hover {
+    border-color: #DFD0B8;
+    transform: scale(1.02);
+}
+
+.post-card {
+    background: #948979;
+    padding: 20px;
+    margin-bottom: 20px;
+    border-radius: 10px;
+    transition: transform 0.3s;
+}
+.post-date {
+    font-size: 0.8rem;
+    color: #4B4038;
+}
+
+.post-card h3 {
+    margin: 10px 0;
+    color: #333333;
+}
+
+.bar {
+    width: 25px;
+    height: 3px;
+    background-color: #CAAA98; /* Warna putih agar terlihat di dark mode */
+    border-radius: 3px;
+    transition: 0.3s;
+}
+
+
+.read-more {
+    display: inline-block;
+    margin-top: 15px;
+    text-decoration: none;
+    color: #CAAA98;
+    font-weight: bold;
+}
+
+.nav-links a {
+    text-decoration: none;
+    color: #9A8678;
+    font-size: 1rem;
+    font-weight: 500;
+    transition: color 0.3s ease;
+}
+
+/* Efek Hover pada Link */
+.nav-links a:hover {
+    color: #CAAA98; /* Warna biru saat kursor di atasnya */
+}
+
+/*button konten*/
+
+:root {
+    --card-bg: #1e1e1e;        /* Abu-abu kartu */
+    --border-soft: #333333;    /* Garis pembatas halus */
+    --text-head: #4B4038;      /* Putih judul */
+    --text-para: #a0a0a0;      /* Abu-abu teks deskripsi */
+    --accent-blog: #64ffda;    /* Aksen Blog (Mint) */
+    --accent-video: #DFD0B8;   /* Aksen Video (Orange Api/Wisanggeni) */
+}
+
+
+/* Header di bawah Navbar */
+.content-header {
+    text-align: center;
+    padding: 60px 20px;
+}
+
+.content-header h1 {
+    color: var(--text-head);
+    font-size: 2rem;
+    margin-bottom: 25px;
+}
+
+/* Container Tombol Utama */
+.nav-buttons {
+    display: flex;
+    justify-content: center;
+    gap: 15px;
+}
+
+.btn {
+    padding: 10px 20px;
+    border-radius: 6px;
+    text-decoration: none;
+    font-weight: bold;
+    font-size: 0.9rem;
+    transition: 0.3s ease;
+}
+
+.btn-blog {
+    border: 1px solid var(--accent-blog);
+    color: var(--accent-blog);
+}
+
+.btn-video {
+    border: 1px solid var(--accent-video);
+    color: var(--accent-video);
+}
+
+.btn:hover {
+    background: rgba(255, 255, 255, 0.05);
+    transform: translateY(-2px);
+}
+
+/* Grid Pembungkus Postingan */
+.container {
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: 40px 20px;
+}
+
+.content-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 20px;
+}
+
+/* Style Kartu Umum */
+.card {
+    background: var(--card-bg);
+    border: 1px solid var(--border-soft);
+    border-radius: 12px;
+    padding: 20px;
+    transition: 0.3s ease;
+    display: flex;
+    flex-direction: column;
+}
+
+
+/* Tag Pembeda (Blog/Video) */
+.tag {
+    font-size: 0.7rem;
+    font-weight: bold;
+    text-transform: uppercase;
+    margin-bottom: 15px;
+    display: inline-block;
+}
+
+.tag-blog { color: var(--accent-blog); }
+.tag-video { color: var(--accent-video); }
+
+/* Isi Kartu */
+.card h3 {
+    color: var(--text-head);
+    margin-bottom: 10px;
+    font-size: 1.2rem;
+}
+
+.card p {
+    font-size: 0.9rem;
+    line-height: 1.5;
+    flex-grow: 1; /* Supaya tinggi teks sama rata */
+}
+
+/* Link di dalam kartu */
+.card-link {
+    margin-top: 20px;
+    text-decoration: none;
+    font-size: 0.85rem;
+    font-weight: bold;
+    color: var(--text-head);
+}
+
+.card-link:hover {
+    text-decoration: underline;
+}
+
+
+/* Blog Post Cards */
+.content {
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 20px;
+}
+
+
+.post-card:hover {
+    transform: translateY(-5px);
+}
+
+/* Reset Dasar */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    
+}
+
+/* Container Navbar */
+.navbar {
+    display: flex;
+    justify-content: space-between; /* Membagi ruang antara logo, menu, dan tombol */
+    align-items: center;
+    padding: 15px 10%;
+    background-color: #202940; /* Warna latar putih bersih */
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1); /* Bayangan halus di bawah */
+    position: sticky;
+    top: 0;
+    z-index: 1000;
+}
+
+/* Style Logo */
+
+
+/* Link Navigasi */
+.nav-links {
+    list-style: none;
+    display: flex;
+}
+
+.nav-links li {
+    margin: 0 20px;
+}
+
+
+/* Sembunyikan burger di layar besar */
+.menu-toggle {
+    display: none;
+    cursor: pointer;
+    flex-direction: column;
+    gap: 5px;
+}
+
+
+/* --- Pengaturan Layar HP (Mobile) --- */
+@media screen and (max-width: 768px) {
+    .menu-toggle {
+        display: flex; /* Munculkan burger */
+    }
+
+    .nav-links {
+        display: none; /* Sembunyikan menu bawaan */
+        flex-direction: column;
+        width: 100%;
+        background-color: #C08552; /* Warna abu-abu bar kamu */
+        position: absolute;
+        top: 60px; /* Jarak dari atas bar */
+        left: 0;
+        border-bottom: 1px solid #333;
+        padding: 20px 0;
+    }
+
+    /* Class tambahan saat menu dibuka (akan dipicu oleh JavaScript) */
+    .nav-links.active {
+        display: flex;
+    }
+
+    .nav-buttons {
+        flex-direction: column;
+        align-items: center;
+    }
+    .btn { width: 80%; text-align: center; }
+
+}
+
+/* Menghilangkan margin bawaan browser */
+#canvas {
+    position: fixed; /* Bintang tetap di posisi layar saat scroll */
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: -1; /* PENTING: Meletakkan bintang di bawah konten website */
+    background-color: #05070a;
+}
+#spaceCanvas {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 5; /* Di atas bintang (#canvas z-index -1), tapi di bawah teks */
+    pointer-events: none;
+}
+body {
+    margin: 0;
+    padding: 0;
+    /* overflow: hidden;  <-- HAPUS baris ini agar bisa scroll */
+}        /* style.css 
+html, body {
+    cursor: none; /* Sembunyikan kursor bawaan Windows/Chrome 
+}
+
+/* Pastikan semua link dan tombol juga menyembunyikan kursor 
+a, button, .menu-toggle {
+    cursor: none;
+}
+
+/* Supaya canvas tidak mengganggu scroll 
+canvas {
+    display: block;
+} */

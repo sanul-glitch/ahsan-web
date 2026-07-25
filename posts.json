@@ -1,0 +1,15 @@
+[
+    {
+        "judul": "Proyek Flight Controller Arduino",
+        "ringkasan": "Eksperimen membuat flight controller sederhana menggunakan Arduino Nano untuk glider 50cm.",
+        "link": "blog/arduino-tvc.html",
+        "tanggal": "2026-04-25"
+    },
+    {
+        "judul": "Desain Logo Wisanggeni",
+        "ringkasan": "Konsep penggabungan elemen bulan dan api dengan estetika futuristik.",
+        "link": "blog/wisanggeni-design.html",
+        "tanggal": "2026-04-20"
+    }
+    
+]

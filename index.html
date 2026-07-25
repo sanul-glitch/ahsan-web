@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+
+<html lang="id">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <link rel="stylesheet" href="style.css">
+        <title>Sanul's Web</title>
+    </head>
+    <body>
+
+</div>
+        <nav class="navbar">
+        <div class="logo">
+            <a href="index.html"><img src="kicau-maniaa.gif" title="homeicon" width="50px" height="50px"></a>
+        </div> 
+            <ul class="nav-links">
+                <li><a href="aboutme.html">About me</a></li>
+                <li><a href="content.html">Content</a></li>
+            </ul>
+            <div class="menu-toggle" id="mobile-menu">
+                <span class="bar"></span>
+                <span class="bar"></span>
+                <span class="bar"></span>
+            </div>
+        </nav>
+        <div style="padding: 100px 20px; text-align: center;">
+            <section>
+  <h1>Selamat datang</h1>
+  <ul class="code">
+    <li tabindex="0" class="digit">
+      <span>H</span>
+    </li>
+    <li tabindex="0" class="digit">
+      <span>A</span>
+    </li>
+    <li tabindex="0" class="digit">
+      <span>L</span>
+    </li>
+    <li tabindex="0" class="digit">
+      <span>O</span>
+    </li>
+  </ul>
+</section>
+        </div>
+<section class="content">
+        <h2>Postingan Terbaru</h2>
+        <div id="post-container">
+            
+        </div>
+    </section>
+<canvas id="canvas"></canvas>
+<script src="cursor.js"></script>
+
+<div>
+<script>
+    // 1. Ambil data dari file JSON
+    fetch('posts.json')
+        .then(response => response.json())
+        .then(data => {
+            const container = document.getElementById('post-container');
+            
+            // 2. Ambil 2-3 postingan terbaru saja
+            const latestPosts = data.slice(0, 3); 
+
+            // 3. Masukkan ke dalam HTML
+            latestPosts.forEach(post => {
+                const card = `
+                    <div class="post-card" style="border: 1px solid #ccc; padding: 15px; margin: 10px 0; border-radius: 8px;">
+                        <h3>${post.judul}</h3>
+                        <p><small>${post.tanggal}</small></p>
+                        <p>${post.ringkasan}</p>
+                        <a href="${post.link}" style="color: #007bff;">Baca selengkapnya...</a>
+                    </div>
+                `;
+                container.innerHTML += card;
+            });
+        })
+        .catch(error => console.error('Gagal memuat postingan:', error));
+</script>
+
+<script>
+    const menu = document.querySelector('#mobile-menu');
+    const menuLinks = document.querySelector('.nav-links');
+
+    menu.addEventListener('click', function() {
+        // Menambah atau menghapus class 'active' saat diklik
+        menuLinks.classList.toggle('active');
+        
+        // Opsional: Animasi burger jadi silang (X)
+        menu.classList.toggle('is-active');
+    });
+</script>
+</div>
+    </body>
+
+</html>
