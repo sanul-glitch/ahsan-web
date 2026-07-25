@@ -5,6 +5,14 @@ body {
     line-height: 1.6;
 }*/
 
+#site {
+  opacity: 0;
+  transition: opacity 1s ease;
+}
+#site.revealed {
+  opacity: 1;
+}
+
 * {
   box-sizing: border-box;
 }
