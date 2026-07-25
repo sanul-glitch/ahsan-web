@@ -102,3 +102,6 @@ function animate() {
 init();
 animate();
 
+// Diekspos agar halaman lain (mis. loading screen) bisa memaksa
+// starfield di-generate ulang begitu canvas benar-benar bersih terlihat.
+window.reinitStarfield = init;
