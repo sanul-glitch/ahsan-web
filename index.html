@@ -1,0 +1,352 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="stylesheet" href="style.css">
+<title>Sanul's Web</title>
+
+<style>
+  /* ====================================================
+     LOADING SCREEN — "WARP JUMP"
+     Bintang di layar loading ditarik ke satu titik pusat
+     (seolah pesawat masuk hyperspace), lalu meledak keluar
+     jadi starfield biasa saat konten situs terungkap.
+  ==================================================== */
+
+  html, body {
+    background: #05070a;
+  }
+
+  #loader {
+    position: fixed;
+    inset: 0;
+    z-index: 9999;
+    background: #05070a;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+    transition: opacity 0.9s ease;
+  }
+
+  #loader.hidden {
+    opacity: 0;
+    pointer-events: none;
+  }
+
+  #loaderCanvas {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+  }
+
+  #loaderCenter {
+    position: relative;
+    z-index: 2;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 1.4rem;
+    text-align: center;
+    padding: 0 1.5rem;
+  }
+
+  #loaderMark {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    font-size: clamp(1.1rem, 2.6vw, 1.6rem);
+    letter-spacing: 0.35em;
+    color: #DFD0B8;
+    text-transform: uppercase;
+    opacity: 0.9;
+  }
+
+  #loaderStatus {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    font-size: 0.85rem;
+    color: #948979;
+    min-height: 1.2em;
+    letter-spacing: 0.05em;
+  }
+
+  #loaderBarTrack {
+    width: min(60vw, 320px);
+    height: 2px;
+    background: rgba(148, 137, 121, 0.25);
+    border-radius: 2px;
+    overflow: hidden;
+    position: relative;
+  }
+
+  #loaderBarFill {
+    position: absolute;
+    inset: 0;
+    width: 0%;
+    background: linear-gradient(90deg, #948979, #DFD0B8);
+    box-shadow: 0 0 12px rgba(223, 208, 184, 0.6);
+    transition: width 0.25s ease-out;
+  }
+
+  #loaderHint {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    font-size: 0.7rem;
+    color: #4B4038;
+    letter-spacing: 0.08em;
+  }
+
+  /* Konten situs disembunyikan halus sebelum reveal */
+  #site {
+    opacity: 0;
+    transition: opacity 1s ease;
+  }
+  #site.revealed {
+    opacity: 1;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    #loader, #site { transition: opacity 0.3s linear; }
+  }
+</style>
+</head>
+<body>
+
+  <!-- ============ LOADING SCREEN ============ -->
+  <div id="loader">
+    <canvas id="loaderCanvas"></canvas>
+    <div id="loaderCenter">
+      <div id="loaderMark">SANUL&nbsp;&middot;&nbsp;AEROSPACE</div>
+      <div id="loaderBarTrack"><div id="loaderBarFill"></div></div>
+      <div id="loaderStatus">Menyalakan mesin&hellip;</div>
+      <div id="loaderHint">klik di mana saja untuk mempercepat lompatan</div>
+    </div>
+  </div>
+
+  <!-- ============ SITE CONTENT ============ -->
+  <div id="site">
+    <nav class="navbar">
+      <div class="logo">
+        <a href="index.html"><img src="kicau-maniaa.gif" title="homeicon" width="50px" height="50px"></a>
+      </div>
+      <ul class="nav-links">
+        <li><a href="aboutme.html">About me</a></li>
+        <li><a href="content.html">Content</a></li>
+      </ul>
+      <div class="menu-toggle" id="mobile-menu">
+        <span class="bar"></span>
+        <span class="bar"></span>
+        <span class="bar"></span>
+      </div>
+    </nav>
+
+    <div style="padding: 100px 20px; text-align: center;">
+      <h1>Blog</h1>
+    </div>
+
+    <section class="content">
+      <h2>Postingan Terbaru</h2>
+      <div id="post-container">
+        <p style="color: gray;">Memuat postingan...</p>
+      </div>
+    </section>
+
+    <canvas id="canvas"></canvas>
+  </div>
+
+  <script>
+    // ==================================================
+    // LOADING SCREEN LOGIC — Warp Jump
+    // ==================================================
+    (function() {
+      const loader = document.getElementById('loader');
+      const site = document.getElementById('site');
+      const canvas = document.getElementById('loaderCanvas');
+      const ctx = canvas.getContext('2d');
+      const barFill = document.getElementById('loaderBarFill');
+      const statusEl = document.getElementById('loaderStatus');
+
+      const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+      let W, H, cx, cy;
+      function resize() {
+        W = canvas.width = window.innerWidth;
+        H = canvas.height = window.innerHeight;
+        cx = W / 2;
+        cy = H / 2;
+      }
+      resize();
+      window.addEventListener('resize', resize);
+
+      // Fase-fase pesan status, terasa seperti checklist pra-peluncuran
+      const messages = [
+        'Menyalakan mesin…',
+        'Mengkalibrasi navigasi…',
+        'Mengunci koordinat…',
+        'Melompat ke hyperspace…'
+      ];
+
+      // ---- Partikel bintang untuk efek warp ----
+      const STAR_COUNT = 260;
+      let stars = [];
+
+      function makeStar() {
+        const angle = Math.random() * Math.PI * 2;
+        const radius = Math.random() * Math.max(W, H) * 0.6 + 20;
+        return {
+          angle,
+          radius,
+          baseRadius: radius,
+          speed: Math.random() * 0.6 + 0.3,
+          size: Math.random() * 1.6 + 0.6,
+          hue: Math.random() * 40 + 40 // kuning pucat, senada cursor.js
+        };
+      }
+
+      function initStars() {
+        stars = [];
+        for (let i = 0; i < STAR_COUNT; i++) stars.push(makeStar());
+      }
+      initStars();
+
+      let progress = 0;       // 0 -> 1, dikendalikan "muatan" halaman + waktu minimum
+      let warpBoost = 0;      // dipicu klik, mempercepat penarikan bintang
+      let launched = false;   // sudah trigger reveal?
+      let msgIndex = 0;
+
+      function setStatus(i) {
+        if (i !== msgIndex && i < messages.length) {
+          msgIndex = i;
+          statusEl.textContent = messages[i];
+        }
+      }
+
+      // Klik mempercepat lompatan (interaktif, terhubung ke tema magnet cursor.js)
+      loader.addEventListener('click', () => {
+        warpBoost = Math.min(warpBoost + 0.35, 1.2);
+      });
+
+      function draw() {
+        ctx.clearRect(0, 0, W, H);
+
+        // pull factor: makin besar progress, makin kuat bintang ditarik ke pusat
+        const pull = Math.min(progress + warpBoost, 1);
+
+        stars.forEach(s => {
+          // radius menyusut menuju pusat seiring progress (efek warp)
+          const r = s.baseRadius * (1 - pull) + 2;
+          s.angle += 0.0015 * s.speed * (1 + pull * 6);
+
+          const x = cx + Math.cos(s.angle) * r;
+          const y = cy + Math.sin(s.angle) * r;
+
+          // panjang "jejak" bertambah saat kecepatan tinggi -> kesan streak cahaya
+          const streak = pull * 18 * s.speed;
+          const tailX = cx + Math.cos(s.angle - 0.02) * (r + streak);
+          const tailY = cy + Math.sin(s.angle - 0.02) * (r + streak);
+
+          ctx.strokeStyle = `hsla(${s.hue}, 100%, 90%, ${0.15 + pull * 0.5})`;
+          ctx.lineWidth = s.size;
+          ctx.beginPath();
+          ctx.moveTo(tailX, tailY);
+          ctx.lineTo(x, y);
+          ctx.stroke();
+        });
+
+        // titik cahaya di pusat, membesar mendekati lompatan
+        const glowR = 4 + pull * 60;
+        const grad = ctx.createRadialGradient(cx, cy, 0, cx, cy, glowR);
+        grad.addColorStop(0, `rgba(223, 208, 184, ${0.5 * pull})`);
+        grad.addColorStop(1, 'rgba(223, 208, 184, 0)');
+        ctx.fillStyle = grad;
+        ctx.beginPath();
+        ctx.arc(cx, cy, glowR, 0, Math.PI * 2);
+        ctx.fill();
+
+        warpBoost *= 0.96; // klik boost meluruh pelan
+      }
+
+      function animateLoader() {
+        if (launched) return;
+        draw();
+        requestAnimationFrame(animateLoader);
+      }
+
+      if (reduceMotion) {
+        // Tanpa animasi: langsung tampilkan progress bar statis, skip canvas warp
+        canvas.style.display = 'none';
+      } else {
+        animateLoader();
+      }
+
+      // ---- Simulasi kesiapan halaman (gambar, fetch posts.json, dsb) ----
+      const MIN_DURATION = 1800; // ms, biar transisi tetap terasa meski aset kecil
+      const start = performance.now();
+
+      let assetsReady = false;
+      window.addEventListener('load', () => { assetsReady = true; });
+      // fallback kalau load event sudah lewat
+      if (document.readyState === 'complete') assetsReady = true;
+
+      function tick() {
+        const elapsed = performance.now() - start;
+        const timeProgress = Math.min(elapsed / MIN_DURATION, 1);
+        progress = assetsReady ? Math.max(progress, timeProgress) : timeProgress * 0.85;
+
+        barFill.style.width = (progress * 100).toFixed(0) + '%';
+        setStatus(Math.min(messages.length - 1, Math.floor(progress * messages.length)));
+
+        if (progress >= 1 && assetsReady && !launched) {
+          launched = true;
+          finishLoad();
+          return;
+        }
+        requestAnimationFrame(tick);
+      }
+      requestAnimationFrame(tick);
+
+      function finishLoad() {
+        setStatus(messages.length - 1);
+        barFill.style.width = '100%';
+        // beri jeda sekejap agar bar 100% terlihat sebelum warp-out
+        setTimeout(() => {
+          loader.classList.add('hidden');
+          site.classList.add('revealed');
+          setTimeout(() => { loader.remove(); }, 950);
+        }, 250);
+      }
+    })();
+  </script>
+
+  <script>
+    fetch('posts.json')
+      .then(response => response.json())
+      .then(data => {
+        const container = document.getElementById('post-container');
+        const latestPosts = data.slice(0, 3);
+        latestPosts.forEach(post => {
+          const card = `
+            <div class="post-card" style="border: 1px solid #ccc; padding: 15px; margin: 10px 0; border-radius: 8px;">
+              <h3>${post.judul}</h3>
+              <p><small>${post.tanggal}</small></p>
+              <p>${post.ringkasan}</p>
+              <a href="${post.link}" style="color: #007bff;">Baca selengkapnya...</a>
+            </div>
+          `;
+          container.innerHTML += card;
+        });
+      })
+      .catch(error => console.error('Gagal memuat postingan:', error));
+  </script>
+
+  <script>
+    const menu = document.querySelector('#mobile-menu');
+    const menuLinks = document.querySelector('.nav-links');
+    menu.addEventListener('click', function() {
+      menuLinks.classList.toggle('active');
+      menu.classList.toggle('is-active');
+    });
+  </script>
+
+  <script src="cursor.js"></script>
+</body>
+</html>
